@@ -56,10 +56,10 @@ public class PathAndFiles {
         System.out.println(path.getParent());
         System.out.println(path.getRoot());
 
-        Path path2=path.resolve("e:/hello.txt");
+        Path path2 = path.resolve("e:/hello.txt");
         System.out.println(path2);
 
-        Path path3=Paths.get("1.jpeg");
+        Path path3 = Paths.get("1.jpeg");
         Path path4 = path3.toAbsolutePath();
         System.out.println(path4);
     }
@@ -75,19 +75,19 @@ public class PathAndFiles {
 	 */
     @Test
     public void testFiles() throws IOException {
-        Path dir=Paths.get("e:/nio/");
+        Path dir = Paths.get("e:/nio/");
         Files.createDirectory(dir);
 
-        Path file=Paths.get("e:/nio/hello.txt");
+        Path file = Paths.get("e:/nio/hello.txt");
         Files.createFile(file);
 
-        Path path1=Paths.get("e:/nio/hello.txt");
-        Path path2=Paths.get("e:/nio/hello2.txt");
-        Files.copy(path1, path2,StandardCopyOption.COPY_ATTRIBUTES);
+        Path path1 = Paths.get("e:/nio/hello.txt");
+        Path path2 = Paths.get("e:/nio/hello2.txt");
+        Files.copy(path1, path2, StandardCopyOption.COPY_ATTRIBUTES);
         System.out.println(Files.size(path2));
 
-        Path path3=Paths.get("e:/nio/hello3.txt");
-        Files.move(path2,path3 ,StandardCopyOption.ATOMIC_MOVE);
+        Path path3 = Paths.get("e:/nio/hello3.txt");
+        Files.move(path2, path3, StandardCopyOption.ATOMIC_MOVE);
         Files.deleteIfExists(path1);
     }
 
@@ -105,8 +105,8 @@ public class PathAndFiles {
      */
     @Test
     public void testFiles2() throws IOException {
-        Path path=Paths.get("e:/nio/hello3.txt");
-        System.out.println(Files.exists(path,LinkOption.NOFOLLOW_LINKS));
+        Path path = Paths.get("e:/nio/hello3.txt");
+        System.out.println(Files.exists(path, LinkOption.NOFOLLOW_LINKS));
         BasicFileAttributes readAttributes = Files.readAttributes(path, BasicFileAttributes.class, LinkOption.NOFOLLOW_LINKS);
         System.out.println(readAttributes.creationTime());
         System.out.println(readAttributes.lastModifiedTime());
@@ -118,10 +118,10 @@ public class PathAndFiles {
 
     /*
 		Files常用方法：用于操作内容
-			SeekableByteChannel newByteChannel(Path path, OpenOption…how) : 获取与指定文件的连接，how 指定打开方式。
-			DirectoryStream newDirectoryStream(Path path) : 打开 path 指定的目录
-			InputStream newInputStream(Path path, OpenOption…how):获取 InputStream 对象
-			OutputStream newOutputStream(Path path, OpenOption…how) : 获取 OutputStream 对象
+            SeekableByteChannel newByteChannel(Path path, OpenOption…how) : 获取与指定文件的连接，how 指定打开方式。
+            DirectoryStream newDirectoryStream(Path path) : 打开 path 指定的目录
+            InputStream newInputStream(Path path, OpenOption…how):获取 InputStream 对象
+            OutputStream newOutputStream(Path path, OpenOption…how) : 获取 OutputStream 对象
 	 */
     @Test
     public void testFiles3() throws IOException {
@@ -133,10 +133,10 @@ public class PathAndFiles {
 
         System.out.println("-------------------------------------");
         InputStream in = Files.newInputStream(Paths.get("e:/nio/hello3.txt"));
-        byte[] buf=new byte[512];
-        int len =0;
-        while ((len=in.read(buf))>0){
-            String str=new String(buf,0,buf.length);
+        byte[] buf = new byte[512];
+        int len = 0;
+        while ((len = in.read(buf)) > 0) {
+            String str = new String(buf, 0, buf.length);
             System.out.println(str);
         }
     }
@@ -144,12 +144,11 @@ public class PathAndFiles {
     //自动资源管理：自动关闭实现 AutoCloseable 接口的资源
     @Test
     public void testAutoCloseable() {
-        try {
-            FileChannel inChannel = FileChannel.open(Paths.get("1.jpg"), StandardOpenOption.READ);
-            FileChannel outChannel = FileChannel.open(Paths.get("2.jpg"), StandardOpenOption.WRITE,StandardOpenOption.CREATE);
+        try (FileChannel inChannel = FileChannel.open(Paths.get("1.jpg"), StandardOpenOption.READ);
+             FileChannel outChannel = FileChannel.open(Paths.get("2.jpg"), StandardOpenOption.WRITE, StandardOpenOption.CREATE)) {
 
-            ByteBuffer buf=ByteBuffer.allocate(1024);
-            if (inChannel.read(buf)!=-1){
+            ByteBuffer buf = ByteBuffer.allocate(1024);
+            if (inChannel.read(buf) != -1) {
                 buf.flip();
                 outChannel.write(buf);
                 buf.clear();
