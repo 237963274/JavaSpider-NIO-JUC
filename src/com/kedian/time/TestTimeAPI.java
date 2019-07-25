@@ -2,7 +2,6 @@ package com.kedian.time;
 
 import org.junit.Test;
 
-import javax.sound.midi.Soundbank;
 import java.time.DayOfWeek;
 import java.time.Duration;
 import java.time.Instant;
@@ -14,8 +13,8 @@ import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
-import java.time.temporal.TemporalAccessor;
 import java.time.temporal.TemporalAdjusters;
+import java.util.Date;
 import java.util.Set;
 
 /**
@@ -149,7 +148,7 @@ public class TestTimeAPI {
      * 6.ZonedDate、ZonedTime、ZonedDateTime ： 带时区的时间或日期
      */
     @Test
-    public void test6(){
+    public void test6() {
         //查看时区
         Set<String> zoneIds = ZoneId.getAvailableZoneIds();
         zoneIds.forEach(System.out::println);
@@ -159,5 +158,44 @@ public class TestTimeAPI {
 
         ZonedDateTime zdt = ZonedDateTime.now(ZoneId.of("Asia/Shanghai"));
         System.out.println(zdt);
+    }
+
+    /**
+     * 传统日期和新日期相互转换
+     */
+    //1)LocalDateTime --> Date
+    public Date localDateTimeToDate(LocalDateTime localDateTime) {
+        ZoneId zoneId = ZoneId.systemDefault();
+        ZonedDateTime zonedDateTime = localDateTime.atZone(zoneId);
+        Instant instant = zonedDateTime.toInstant();
+        Date date = Date.from(instant);
+        return date;
+    }
+
+    //2) Date --> LocalDateTime
+    public LocalDateTime dateToLocalDateTime() {
+        Date date = new Date();
+        Instant instant = date.toInstant();
+        ZoneId zoneId = ZoneId.systemDefault();
+        ZonedDateTime zonedDateTime = instant.atZone(zoneId);
+        LocalDateTime localDateTime = zonedDateTime.toLocalDateTime();
+        return localDateTime;
+    }
+
+    //3.LocalDateTime转时间戳
+    public Long localDateTimeToTimestap(LocalDateTime localDateTime) {
+        ZoneId zoneId = ZoneId.systemDefault();
+        ZonedDateTime zonedDateTime = localDateTime.atZone(zoneId);
+        Instant instant = zonedDateTime.toInstant();
+        long milli = instant.toEpochMilli();
+        return milli;
+    }
+
+    //4.时间戳转LocalDateTime
+    public LocalDateTime timestapToLocalDateTime(long timestap) {
+        Instant instant = Instant.ofEpochMilli(timestap);
+        ZoneId zoneId = ZoneId.systemDefault();
+        LocalDateTime localDateTime = LocalDateTime.ofInstant(instant, zoneId);
+        return localDateTime;
     }
 }
